@@ -1,0 +1,18 @@
+{
+  "name": "codespark-server",
+  "version": "1.0.0",
+  "description": "Backend API for CodeSpark - challenges and submissions",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "seed": "node config/seed.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mysql2": "^3.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5"
+  }
+}
