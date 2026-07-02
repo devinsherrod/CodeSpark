@@ -42,7 +42,12 @@ app.get("/", (req, res) => {
   res.json({ status: "CodeSpark API running" });
 });
 
-// Start the server listening for incoming requests.
-app.listen(PORT, () => {
-  console.log(`CodeSpark server listening on port ${PORT}`);
-});
+// Only start the server if this file is run directly.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`CodeSpark server listening on port ${PORT}`);
+  });
+}
+
+// Export the app so Jest can test it.
+module.exports = app;
