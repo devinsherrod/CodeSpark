@@ -15,16 +15,16 @@ Our team’s goal is to develop a web app that encourages users to learn program
 
 ## Release Notes: Milestone 2
 ### Features Completed
-- Integrated Jest and Supertest for automated backend API testing.
-- Updated the Express server to export the application for testing.
-- Modified the server so it only starts when run directly, allowing Jest to run tests without opening a server port.
-- Implemented tests for the API status endpoint.
-- Implemented Challenge API tests, including retrieving all challenges, retrieving a challenge by ID, and handling requests for non-existent challenges.
-- Implemented Submission API tests, including successful submissions, input validation, invalid challenge IDs, retrieving user submissions, and database error handling.
-- Mocked the database connection during testing so the test suite can run without requiring a MySQL server.
+- Integrated Jest and Supertest to provide automated testing for the backend API.
+- Updated the Express server to export the application for automated testing.
+- Modified the server to start only when run directly, allowing Jest to execute tests without opening a server port.
+- Added automated tests for the API status endpoint.
+- Added automated tests for the Challenges API, including retrieving all challenges, retrieving a challenge by ID, and handling requests for non-existent challenges.
+- Added automated tests for the Submissions API, including successful submissions, input validation, invalid challenge IDs, retrieving user submissions, and database error handling.
+- Configured database mocking during testing so the test suite can run without requiring a MySQL server.
 ### Known Limitations
-- Current automated tests cover backend API functionality only.
-- Frontend components are not included in the test suite.
-- Database interactions are tested using mocked responses instead of a real database.
+- Automated tests currently focus on backend API functionality only.
+- Frontend React components are not yet included in the automated test suite.
+- Database interactions are tested using mocked responses rather than a live MySQL database.
 - Authentication and authorization features have not yet been implemented or tested.
-- Additional automated tests will be added in future milestones.
+- Additional automated tests will be added in future milestones as new features are developed.
