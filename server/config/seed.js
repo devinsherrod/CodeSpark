@@ -16,6 +16,7 @@ const challenges = [
     difficulty: "Easy",
     starter_code: "function reverseString(str) {\n  // your code here\n}",
     expected_output: "olleh", // what our naive pass/fail check looks for in the submission
+    hint: "Try splitting the string into an array of characters, reversing that array, then joining it back together.",
   },
   {
     title: "FizzBuzz",
@@ -24,6 +25,7 @@ const challenges = [
     difficulty: "Easy",
     starter_code: "function fizzBuzz() {\n  // your code here\n}",
     expected_output: "1,2,Fizz,4,Buzz,Fizz,7,8,Fizz,Buzz,11,Fizz,13,14,FizzBuzz",
+    hint: "Use the modulo operator (%) to check divisibility. Check for 'divisible by both 3 and 5' before checking each one individually.",
   },
   {
     title: "Two Sum",
@@ -32,6 +34,7 @@ const challenges = [
     difficulty: "Medium",
     starter_code: "function twoSum(nums, target) {\n  // your code here\n}",
     expected_output: "[0,1]",
+    hint: "A brute-force double loop works, but think about using an object/map to store numbers you've already seen so you can check for the complement in one pass.",
   },
 ];
 
@@ -42,8 +45,8 @@ async function seed() {
     // same pattern as the route files.
     for (const c of challenges) {
       await pool.query(
-        "INSERT INTO challenges (title, description, difficulty, starter_code, expected_output) VALUES (?, ?, ?, ?, ?)",
-        [c.title, c.description, c.difficulty, c.starter_code, c.expected_output]
+        "INSERT INTO challenges (title, description, difficulty, starter_code, expected_output, hint) VALUES (?, ?, ?, ?, ?, ?)",
+        [c.title, c.description, c.difficulty, c.starter_code, c.expected_output, c.hint]
       );
     }
     console.log(`Seeded ${challenges.length} challenges.`);

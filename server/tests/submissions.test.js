@@ -37,6 +37,27 @@ describe("Submissions API", () => {
     expect(res.body.passed).toBe(true);
   });
 
+  // Checks that a WRONG submission is correctly marked as failed.
+  // This is the actual "does the checker work" test — M2's test only
+  // covered the passing case, not the failing one.
+  test("POST /api/submissions marks an incorrect submission as failed", async () => {
+    pool.query
+      .mockResolvedValueOnce([[{ expected_output: "Hello World" }]])
+      .mockResolvedValueOnce([{ insertId: 2 }]);
+
+    const res = await request(app)
+      .post("/api/submissions")
+      .send({
+        challengeId: 1,
+        userId: 1,
+        code: 'console.log("nope");',
+      });
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.submissionId).toBe(2);
+    expect(res.body.passed).toBe(false);
+  });
+
   // Checks that missing required fields return a 400 error.
   test("POST /api/submissions returns 400 when required fields are missing", async () => {
     const res = await request(app)
@@ -49,6 +70,45 @@ describe("Submissions API", () => {
     expect(res.body.error).toBe(
       "challengeId, userId, and code are required"
     );
+  });
+
+  // Checks that missing just the code field is also caught (not just
+  // when everything is missing).
+  test("POST /api/submissions returns 400 when code is missing", async () => {
+    const res = await request(app)
+      .post("/api/submissions")
+      .send({
+        challengeId: 1,
+        userId: 1,
+      });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.error).toBe(
+      "challengeId, userId, and code are required"
+    );
+  });
+
+  // Checks that a database error while saving a submission returns 500,
+  // instead of crashing or silently losing the attempt.
+  test("POST /api/submissions returns 500 on database error", async () => {
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    pool.query.mockRejectedValueOnce(new Error("Database Error"));
+
+    const res = await request(app)
+      .post("/api/submissions")
+      .send({
+        challengeId: 1,
+        userId: 1,
+        code: "test",
+      });
+
+    expect(res.statusCode).toBe(500);
+    expect(res.body.error).toBe("Failed to process submission");
+
+    consoleSpy.mockRestore();
   });
 
   // Checks that an invalid challenge ID returns a 404 error.

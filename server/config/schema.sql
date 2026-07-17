@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS challenges (
   difficulty ENUM('Easy', 'Medium', 'Hard') NOT NULL,
   starter_code TEXT,              -- pre-filled code shown in the editor textarea
   expected_output TEXT NOT NULL,  -- used by the placeholder pass/fail check in submissions.js
+  hint TEXT,                      -- M3: shown to the user on request, not automatically
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

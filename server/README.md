@@ -1,6 +1,6 @@
-# CodeSpark Server (M2)
+# CodeSpark Server (M3)
 
-Backend API for challenge display and code submission checking.
+Backend API for challenge display, code submission checking, and progress tracking.
 
 ## Setup
 
@@ -39,6 +39,7 @@ Server runs on `http://localhost:5050` by default (change `PORT` in `.env` if ne
 | GET | `/api/challenges/:id` | Full detail for one challenge |
 | POST | `/api/submissions` | Submit code for a challenge. Body: `{ challengeId, userId, code }` |
 | GET | `/api/submissions/:userId` | All submissions for a given user |
+| GET | `/api/progress/:userId` | `{ completedChallenges, currentStreak, level }` for the Dashboard/Progress pages |
 
 ### Example: POST /api/submissions
 

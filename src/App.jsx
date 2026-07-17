@@ -14,7 +14,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/challenges" element={<Challenges />} />
-        <Route path="/challenge" element={<ChallengeDetail />} />
+        <Route path="/challenge/:id" element={<ChallengeDetail />} />
         <Route path="/progress" element={<Progress />} />
       </Routes>
     </BrowserRouter>

@@ -17,6 +17,7 @@ require("dotenv").config(); // loads variables from .env into process.env (DB_HO
 // endpoints (e.g. all the /api/challenges routes live in routes/challenges.js).
 const challengesRoutes = require("./routes/challenges");
 const submissionsRoutes = require("./routes/submissions");
+const progressRoutes = require("./routes/progress");
 
 const app = express();
 const PORT = process.env.PORT || 5050; // falls back to 5050 if .env doesn't set PORT
@@ -35,6 +36,7 @@ app.use(express.json());
 // Any request to /api/submissions/* gets handed off to submissionsRoutes.
 app.use("/api/challenges", challengesRoutes);
 app.use("/api/submissions", submissionsRoutes);
+app.use("/api/progress", progressRoutes);
 
 // Simple root route, useful for a quick "is the server alive?" check
 // by just visiting http://localhost:5050/ in a browser.

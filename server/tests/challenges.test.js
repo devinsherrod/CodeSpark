@@ -62,4 +62,37 @@ describe("Challenges API", () => {
     expect(res.statusCode).toBe(404);
     expect(res.body.error).toBe("Challenge not found");
   });
+
+  // Checks that a database error while listing challenges returns 500
+  // instead of crashing the server.
+  test("GET /api/challenges returns 500 on database error", async () => {
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    pool.query.mockRejectedValueOnce(new Error("Database Error"));
+
+    const res = await request(app).get("/api/challenges");
+
+    expect(res.statusCode).toBe(500);
+    expect(res.body.error).toBe("Failed to fetch challenges");
+
+    consoleSpy.mockRestore();
+  });
+
+  // Checks that a database error while fetching one challenge returns 500.
+  test("GET /api/challenges/:id returns 500 on database error", async () => {
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    pool.query.mockRejectedValueOnce(new Error("Database Error"));
+
+    const res = await request(app).get("/api/challenges/1");
+
+    expect(res.statusCode).toBe(500);
+    expect(res.body.error).toBe("Failed to fetch challenge");
+
+    consoleSpy.mockRestore();
+  });
 });
