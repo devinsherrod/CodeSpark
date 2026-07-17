@@ -22,9 +22,16 @@ Our team’s goal is to develop a web app that encourages users to learn program
 - Added automated tests for the Challenges API, including retrieving all challenges, retrieving a challenge by ID, and handling requests for non-existent challenges.
 - Added automated tests for the Submissions API, including successful submissions, input validation, invalid challenge IDs, retrieving user submissions, and database error handling.
 - Configured database mocking during testing so the test suite can run without requiring a MySQL server.
+
+## Release Notes: Milestone 3
+### Features Completed
+- Added actual coding challenge content for users to practice programming.
+- Created challenge descriptions, instructions, and examples to guide users through solving problems.
+- Updated the Challenges page to display available coding exercises.
+- Expanded challenge details pages to provide users with the information needed to complete each challenge.
+- Improved the project structure to support adding more coding challenges in future milestones.
 ### Known Limitations
-- Automated tests currently focus on backend API functionality only.
-- Frontend React components are not yet included in the automated test suite.
-- Database interactions are tested using mocked responses rather than a live MySQL database.
-- Authentication and authorization features have not yet been implemented or tested.
-- Additional automated tests will be added in future milestones as new features are developed.
+- Authentication and user accounts are not yet implemented.
+- Challenge progress tracking is not connected to a database.
+- Code submission and automatic evaluation features are still under development.
+- Additional coding challenges and features will be added in future milestones.
