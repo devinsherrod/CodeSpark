@@ -1,87 +1,158 @@
 // routes/submissions.js
-// Handles code submissions: saving them and checking pass/fail.
+// Handles code submissions: saving them, running automated tests,
+// and returning pass/fail results.
 // Mounted in index.js at the path prefix /api/submissions
 
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
+const { runChallengeTests } = require("../utils/challengeRunner");
 
 // POST /api/submissions
 // Body: { challengeId, userId, code }
 //
 // IMPORTANT — read this before extending it:
-// This does NOT actually execute the submitted JavaScript code. Running
-// arbitrary user-submitted code safely requires a sandboxed environment
-// (isolated process/container, timeouts, memory limits) to stop someone
-// from submitting something malicious or an infinite loop. That's a
-// bigger feature than fits in the M2 timeline, so for now we're using a
-// placeholder check: does the submitted code CONTAIN the challenge's
-// expected output as a substring? It's not a real test runner, but it
-// gives Devin a real endpoint with real pass/fail behavior to write
-// tests against. Swapping in real execution later only means changing
-// the logic inside this one route — the request/response shape won't
-// need to change.
+// Unlike the original implementation, this route now executes the
+// submitted JavaScript against predefined test cases for each challenge.
+// The actual test logic lives inside utils/challengeRunner.js so new
+// challenges can be added without modifying this route.
+//
+// Each challenge is mapped to one or more automated test cases.
+// When a submission is received, this route looks up the challenge,
+// sends the submitted code to the challenge runner, records whether
+// the submission passed or failed, and stores every attempt in the
+// database. Keeping every submission allows future features like
+// progress tracking, submission history, and statistics.
+//
+// This route is intentionally responsible only for:
+//
+//   • validating incoming requests
+//   • retrieving challenge information
+//   • running the challenge tests
+//   • saving the submission
+//   • returning the results
+//
+// Any future improvements to how challenges are executed (additional
+// languages, sandboxing, hidden test cases, performance limits, etc.)
+// should be implemented inside challengeRunner.js so this route remains
+// simple and easy to maintain.
 router.post("/", async (req, res) => {
   const { challengeId, userId, code } = req.body;
 
   // Basic validation — make sure the caller actually sent what we need
   // before touching the database.
-  if (!challengeId || !userId || !code) {
-    return res
-      .status(400) // 400 = bad request (client's fault, missing data)
-      .json({ error: "challengeId, userId, and code are required" });
+  if (
+    challengeId === undefined ||
+    userId === undefined ||
+    typeof code !== "string" ||
+    code.trim() === ""
+  ) {
+    return res.status(400).json({
+      error: "challengeId, userId, and code are required",
+    });
+  }
+
+  const parsedChallengeId = Number(challengeId);
+  const parsedUserId = Number(userId);
+
+  if (
+    !Number.isInteger(parsedChallengeId) ||
+    parsedChallengeId <= 0 ||
+    !Number.isInteger(parsedUserId) ||
+    parsedUserId <= 0
+  ) {
+    return res.status(400).json({
+      error: "challengeId and userId must be positive whole numbers",
+    });
   }
 
   try {
-    // Look up the expected output for this challenge so we have
-    // something to compare the submission against.
+    // Look up the challenge so we know which automated test suite to run.
     const [challengeRows] = await pool.query(
-      "SELECT expected_output FROM challenges WHERE id = ?",
-      [challengeId]
+      "SELECT id, title FROM challenges WHERE id = ?",
+      [parsedChallengeId]
     );
 
     if (challengeRows.length === 0) {
-      return res.status(404).json({ error: "Challenge not found" });
+      return res.status(404).json({
+        error: "Challenge not found",
+      });
     }
 
-    const expectedOutput = challengeRows[0].expected_output;
+    const challenge = challengeRows[0];
 
-    // --- Placeholder "test runner" ---
-    // Real version (future milestone) would actually execute `code` in
-    // a sandbox and compare its real output. For now: naive substring check.
-    const passed = code.includes(expectedOutput);
+    // Run the submitted code against the automated tests configured
+    // for this challenge. The challenge runner returns whether every
+    // test passed along with any additional information about failures.
+    const testResult = runChallengeTests(challenge.title, code);
+    const passed = testResult.passed === true;
 
-    // Save the submission attempt either way (pass or fail) so we have
-    // a history — useful later for the Progress/Dashboard pages.
+    // Save every submission attempt, whether it passed or failed.
+    // This allows the application to show submission history,
+    // progress tracking, and future performance analytics.
     const [result] = await pool.query(
       "INSERT INTO submissions (challenge_id, user_id, code, passed) VALUES (?, ?, ?, ?)",
-      [challengeId, userId, code, passed]
+      [parsedChallengeId, parsedUserId, code, passed]
     );
 
     // 201 = Created, since we successfully created a new submission record
     res.status(201).json({
-      submissionId: result.insertId, // MySQL gives us the auto-increment id of the new row
+      submissionId: result.insertId,
+      challengeId: parsedChallengeId,
+      challengeTitle: challenge.title,
       passed,
+      message: passed ? "Passed! Nice work." : "Not quite—try again.",
+      error: testResult.error || null,
+      expected: passed ? undefined : testResult.expected,
+      actual: passed ? undefined : testResult.actual,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to process submission" });
+    console.error("Submission processing error:", err);
+    res.status(500).json({
+      error: "Failed to process submission",
+    });
   }
 });
 
 // GET /api/submissions/:userId
 // Returns every submission a given user has made, most recent first.
-// Useful for a future "submission history" or Progress page.
+// Useful for the Progress page, submission history,
+// and future dashboard analytics.
 router.get("/:userId", async (req, res) => {
+  const userId = Number(req.params.userId);
+
+  if (!Number.isInteger(userId) || userId <= 0) {
+    return res.status(400).json({
+      error: "userId must be a positive whole number",
+    });
+  }
+
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM submissions WHERE user_id = ? ORDER BY submitted_at DESC",
-      [req.params.userId]
+      `
+      SELECT
+        submissions.id,
+        submissions.challenge_id,
+        challenges.title AS challenge_title,
+        submissions.user_id,
+        submissions.code,
+        submissions.passed,
+        submissions.submitted_at
+      FROM submissions
+      JOIN challenges
+        ON submissions.challenge_id = challenges.id
+      WHERE submissions.user_id = ?
+      ORDER BY submissions.submitted_at DESC
+      `,
+      [userId]
     );
+
     res.json(rows);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch submissions" });
+    console.error("Submission history error:", err);
+    res.status(500).json({
+      error: "Failed to fetch submissions",
+    });
   }
 });
 
