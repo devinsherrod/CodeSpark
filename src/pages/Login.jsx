@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [showIntro, setShowIntro] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -12,11 +17,23 @@ function Login() {
     return () => clearTimeout(timer);
   }, []);
 
+  function handleLogin() {
+    if (!email || !password) {
+      setError("Please enter both email and password.");
+      return;
+    }
+
+    setError("");
+    navigate("/dashboard");
+  }
+
   if (showIntro) {
     return (
       <div className="intro-page">
         <h1 className="intro-logo">CodeSpark</h1>
-        <p className="intro-text">Build your coding habit one challenge at a time.</p>
+        <p className="intro-text">
+          Build your coding habit one challenge at a time.
+        </p>
       </div>
     );
   }
@@ -26,14 +43,29 @@ function Login() {
       <div className="login-card">
         <h1 className="logo">CodeSpark</h1>
 
-        <p className="tagline">Daily Coding Challenges for Beginners</p>
+        <p className="tagline">
+          Daily Coding Challenges for Beginners
+        </p>
 
-        <input type="text" placeholder="Email" />
-        <input type="password" placeholder="Password" />
+        <input
+          type="text"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-        <Link to="/dashboard">
-          <button>Login</button>
-        </Link>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        {error && <p>{error}</p>}
+
+        <button onClick={handleLogin}>
+          Login
+        </button>
       </div>
     </div>
   );
