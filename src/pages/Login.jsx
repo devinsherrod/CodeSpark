@@ -17,6 +17,15 @@ function Login() {
     return () => clearTimeout(timer);
   }, []);
 
+  if (showIntro) {
+    return (
+      <div className="intro-page">
+        <h1 className="intro-logo">CodeSpark</h1>
+        <p className="intro-text">Build your coding habit one challenge at a time.</p>
+      </div>
+    );
+  }
+
   function handleLogin() {
     if (!email || !password) {
       setError("Please enter both email and password.");
@@ -27,25 +36,12 @@ function Login() {
     navigate("/dashboard");
   }
 
-  if (showIntro) {
-    return (
-      <div className="intro-page">
-        <h1 className="intro-logo">CodeSpark</h1>
-        <p className="intro-text">
-          Build your coding habit one challenge at a time.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="app-page">
       <div className="login-card">
         <h1 className="logo">CodeSpark</h1>
 
-        <p className="tagline">
-          Daily Coding Challenges for Beginners
-        </p>
+        <p className="tagline">Daily Coding Challenges for Beginners</p>
 
         <input
           type="text"
@@ -61,11 +57,9 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {error && <p>{error}</p>}
+        {error && <p className="error-message">{error}</p>}
 
-        <button onClick={handleLogin}>
-          Login
-        </button>
+        <button onClick={handleLogin}>Login</button>
       </div>
     </div>
   );
