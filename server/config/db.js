@@ -1,23 +1,40 @@
-// db.js
-// Sets up a reusable MySQL connection pool that every route file imports
-// and queries against. A "pool" is a collection of open connections that
-// get reused across requests instead of opening/closing a new connection
-// every single time — much faster and avoids exhausting MySQL's max
-// connection limit under load.
+/**
+ * @file db.js
+ * @description
+ * Creates and exports a reusable MySQL connection pool for the
+ * CodeSpark backend application.
+ *
+ * The connection pool improves performance by reusing existing
+ * database connections instead of creating a new connection for
+ * every request.
+ */
 
-const mysql = require("mysql2/promise"); // "promise" version lets us use async/await instead of callbacks
+const mysql = require("mysql2/promise");
 require("dotenv").config();
 
+/**
+ * MySQL connection pool.
+ *
+ * Database configuration values are loaded from environment
+ * variables. Default values are used if the environment
+ * variables are not defined.
+ *
+ * @constant {import("mysql2/promise").Pool}
+ */
 const pool = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "codespark_db",
-  waitForConnections: true, // if all connections are busy, queue the request instead of erroring
-  connectionLimit: 10,      // max simultaneous connections in the pool
-  queueLimit: 0,            // 0 = unlimited queued requests waiting for a free connection
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-// Exported so route files can do: const pool = require("../config/db");
-// then: await pool.query("SELECT ...")
+/**
+ * Shared MySQL connection pool.
+ *
+ * Imported by route files to execute SQL queries using
+ * asynchronous database operations.
+ */
 module.exports = pool;

@@ -1,7 +1,25 @@
+/**
+ * @file ChallengeDetail.jsx
+ * @description
+ * Displays the details of a selected coding challenge.
+ * Allows the user to view the challenge description,
+ * write code, submit a solution, and view hints and results.
+ */
+
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getChallenge, submitChallenge } from "../api";
 
+/**
+ * Challenge detail page component.
+ *
+ * Retrieves a coding challenge based on the route parameter,
+ * displays its information, and allows the user to submit
+ * a solution for evaluation.
+ *
+ * @function ChallengeDetail
+ * @returns {JSX.Element} The challenge detail page.
+ */
 function ChallengeDetail() {
   const { id } = useParams();
 
@@ -12,6 +30,10 @@ function ChallengeDetail() {
   const [result, setResult] = useState(null); // null | { passed: boolean }
   const [submitting, setSubmitting] = useState(false);
 
+  /**
+   * Loads the selected challenge when the page is opened
+   * or whenever the challenge ID changes.
+   */
   useEffect(() => {
     let cancelled = false;
 
@@ -32,9 +54,19 @@ function ChallengeDetail() {
     };
   }, [id]);
 
+  /**
+   * Submits the user's solution to the backend for evaluation.
+   *
+   * Displays whether the submitted solution passed or failed
+   * after receiving the server response.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
   async function handleSubmit() {
     setSubmitting(true);
     setResult(null);
+
     try {
       const data = await submitChallenge(Number(id), code);
       setResult({ passed: data.passed });
@@ -99,8 +131,11 @@ function ChallengeDetail() {
       )}
 
       {result && result.error && (
-        <p className="result-text">Something went wrong submitting. Try again.</p>
+        <p className="result-text">
+          Something went wrong submitting. Try again.
+        </p>
       )}
+
       {result && !result.error && (
         <p className="result-text">
           {result.passed ? "Passed! Nice work." : "Not quite — try again."}

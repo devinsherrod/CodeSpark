@@ -1,50 +1,67 @@
-// routes/challenges.js
-// All endpoints related to reading challenge data.
-// Mounted in index.js at the path prefix /api/challenges
+/**
+ * @file challenges.js
+ * @description
+ * Defines API endpoints for retrieving coding challenge information.
+ * These routes provide both the challenge list and individual
+ * challenge details.
+ */
 
 const express = require("express");
-const router = express.Router(); // a "mini app" that groups related routes together
+const router = express.Router();
 const pool = require("../config/db");
 
-// GET /api/challenges
-// Returns a lightweight list of every challenge (just enough to render
-// a list page) — we don't send the full description/starter_code here
-// since the list view doesn't need it.
+/**
+ * Retrieves a list of all coding challenges.
+ *
+ * @route GET /api/challenges
+ * @async
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>} Returns a JSON array of challenges.
+ */
 router.get("/", async (req, res) => {
   try {
     const [rows] = await pool.query(
       "SELECT id, title, difficulty FROM challenges ORDER BY id ASC"
     );
-    res.json(rows); // Express automatically sets Content-Type: application/json
+
+    res.json(rows);
   } catch (err) {
     console.error(err);
-    // 500 = generic server error. We don't leak the raw DB error to the
-    // client, just log it server-side for debugging.
     res.status(500).json({ error: "Failed to fetch challenges" });
   }
 });
 
-// GET /api/challenges/:id
-// Returns full detail for ONE challenge, including description and
-// starter_code, for the Challenge Detail page.
-// :id is a route parameter — e.g. /api/challenges/3 sets req.params.id = "3"
+/**
+ * Retrieves detailed information for a single coding challenge.
+ *
+ * @route GET /api/challenges/:id
+ * @async
+ * @param {Object} req - Express request object.
+ * @param {Object} req.params - Route parameters.
+ * @param {string} req.params.id - Challenge identifier.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>} Returns the challenge details as JSON.
+ */
 router.get("/:id", async (req, res) => {
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM challenges WHERE id = ?", // "?" is a placeholder filled in safely below
-      [req.params.id]                          // prevents SQL injection — never string-concatenate user input into a query
+      "SELECT * FROM challenges WHERE id = ?",
+      [req.params.id]
     );
 
     if (rows.length === 0) {
-      // No challenge with that id exists
       return res.status(404).json({ error: "Challenge not found" });
     }
 
-    res.json(rows[0]); // rows is always an array; we only want the single matching row
+    res.json(rows[0]);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch challenge" });
   }
 });
 
+/**
+ * Express router containing challenge-related API endpoints.
+ */
 module.exports = router;

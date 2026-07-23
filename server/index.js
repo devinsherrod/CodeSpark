@@ -1,55 +1,78 @@
-// index.js
-// This is the entry point for the CodeSpark backend server.
-// Running `npm start` (or `node index.js`) boots this file.
-//
-// What it does, in order:
-//   1. Sets up an Express app (Express = lightweight Node.js web framework
-//      for handling HTTP requests/responses and routing).
-//   2. Loads middleware (cors, json parsing).
-//   3. Mounts our two route files (challenges, submissions) under /api.
-//   4. Starts listening for requests on a port.
+/**
+ * @file index.js
+ * @description
+ * Entry point for the CodeSpark backend server.
+ *
+ * This file configures the Express application, registers middleware,
+ * mounts API routes, and starts the HTTP server.
+ */
 
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config(); // loads variables from .env into process.env (DB_HOST, PORT, etc.)
+require("dotenv").config();
 
-// Import our route handlers. Each file below defines a set of related
-// endpoints (e.g. all the /api/challenges routes live in routes/challenges.js).
 const challengesRoutes = require("./routes/challenges");
 const submissionsRoutes = require("./routes/submissions");
 const progressRoutes = require("./routes/progress");
 
 const app = express();
-const PORT = process.env.PORT || 5050; // falls back to 5050 if .env doesn't set PORT
 
-// --- Middleware ---
-// cors() allows the React frontend (running on a different port, e.g. 5173)
-// to make requests to this server without the browser blocking them.
+/**
+ * Port used by the backend server.
+ *
+ * Uses the PORT environment variable if available,
+ * otherwise defaults to port 5050.
+ *
+ * @constant {number|string}
+ */
+const PORT = process.env.PORT || 5050;
+
+/**
+ * Enables Cross-Origin Resource Sharing (CORS) so the
+ * React frontend can communicate with the backend.
+ */
 app.use(cors());
 
-// express.json() lets Express automatically parse incoming JSON request
-// bodies into req.body, so routes can do things like `req.body.code`.
+/**
+ * Parses incoming JSON request bodies and makes the
+ * parsed data available through req.body.
+ */
 app.use(express.json());
 
-// --- Routes ---
-// Any request to /api/challenges/* gets handed off to challengesRoutes.
-// Any request to /api/submissions/* gets handed off to submissionsRoutes.
+/**
+ * Registers the API route handlers.
+ */
 app.use("/api/challenges", challengesRoutes);
 app.use("/api/submissions", submissionsRoutes);
 app.use("/api/progress", progressRoutes);
 
-// Simple root route, useful for a quick "is the server alive?" check
-// by just visiting http://localhost:5050/ in a browser.
+/**
+ * Root endpoint used to verify that the backend server
+ * is running correctly.
+ *
+ * @name GET /
+ * @function
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {void}
+ */
 app.get("/", (req, res) => {
   res.json({ status: "CodeSpark API running" });
 });
 
-// Only start the server if this file is run directly.
+/**
+ * Starts the Express server when this file is executed
+ * directly from Node.js.
+ */
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`CodeSpark server listening on port ${PORT}`);
   });
 }
 
-// Export the app so Jest can test it.
+/**
+ * Express application instance.
+ *
+ * Exported for automated testing with Jest.
+ */
 module.exports = app;

@@ -1,0 +1,17 @@
+{
+  "source": {
+    "include": [
+      "src",
+      "server"
+    ],
+    "includePattern": ".+\\.(js|jsx)$",
+    "excludePattern": "(node_modules|docs)"
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "opts": {
+    "destination": "./docs",
+    "recurse": true
+  }
+}

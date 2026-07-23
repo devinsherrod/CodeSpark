@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/pages/ChallengeDetail.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/pages/ChallengeDetail.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file ChallengeDetail.jsx
+ * @description
+ * Displays the details of a selected coding challenge.
+ * Allows the user to view the challenge description,
+ * write code, submit a solution, and view hints and results.
+ */
+
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { getChallenge, submitChallenge } from "../api";
+
+/**
+ * Challenge detail page component.
+ *
+ * Retrieves a coding challenge based on the route parameter,
+ * displays its information, and allows the user to submit
+ * a solution for evaluation.
+ *
+ * @function ChallengeDetail
+ * @returns {JSX.Element} The challenge detail page.
+ */
+function ChallengeDetail() {
+  const { id } = useParams();
+
+  const [challenge, setChallenge] = useState(null);
+  const [status, setStatus] = useState("loading"); // "loading" | "ready" | "error"
+  const [code, setCode] = useState("");
+  const [showHint, setShowHint] = useState(false);
+  const [result, setResult] = useState(null); // null | { passed: boolean }
+  const [submitting, setSubmitting] = useState(false);
+
+  /**
+   * Loads the selected challenge when the page is opened
+   * or whenever the challenge ID changes.
+   */
+  useEffect(() => {
+    let cancelled = false;
+
+    getChallenge(id).then(
+      (data) => {
+        if (cancelled) return;
+        setChallenge(data);
+        setCode(data.starter_code || "");
+        setStatus("ready");
+      },
+      () => {
+        if (!cancelled) setStatus("error");
+      }
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  /**
+   * Submits the user's solution to the backend for evaluation.
+   *
+   * Displays whether the submitted solution passed or failed
+   * after receiving the server response.
+   *
+   * @async
+   * @returns {Promise&lt;void>}
+   */
+  async function handleSubmit() {
+    setSubmitting(true);
+    setResult(null);
+
+    try {
+      const data = await submitChallenge(Number(id), code);
+      setResult({ passed: data.passed });
+    } catch {
+      setResult({ error: true });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (status === "loading") {
+    return (
+      &lt;div className="app-page">
+        &lt;p>Loading challenge...&lt;/p>
+      &lt;/div>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      &lt;div className="app-page">
+        &lt;p>Couldn't load this challenge. Is the backend server running?&lt;/p>
+        &lt;Link to="/challenges">
+          &lt;button>Back to Challenges&lt;/button>
+        &lt;/Link>
+      &lt;/div>
+    );
+  }
+
+  return (
+    &lt;div className="app-page">
+      &lt;h1>
+        {challenge.title} ({challenge.difficulty})
+      &lt;/h1>
+
+      &lt;p>{challenge.description}&lt;/p>
+
+      &lt;textarea
+        rows="10"
+        cols="50"
+        value={code}
+        onChange={(e) => setCode(e.target.value)}
+      >&lt;/textarea>
+
+      &lt;br />&lt;br />
+
+      &lt;button onClick={handleSubmit} disabled={submitting}>
+        {submitting ? "Submitting..." : "Submit"}
+      &lt;/button>
+
+      {challenge.hint &amp;&amp; (
+        &lt;>
+          {" "}
+          &lt;button onClick={() => setShowHint((prev) => !prev)}>
+            {showHint ? "Hide Hint" : "Show Hint"}
+          &lt;/button>
+        &lt;/>
+      )}
+
+      {showHint &amp;&amp; challenge.hint &amp;&amp; (
+        &lt;p className="hint-text">Hint: {challenge.hint}&lt;/p>
+      )}
+
+      {result &amp;&amp; result.error &amp;&amp; (
+        &lt;p className="result-text">
+          Something went wrong submitting. Try again.
+        &lt;/p>
+      )}
+
+      {result &amp;&amp; !result.error &amp;&amp; (
+        &lt;p className="result-text">
+          {result.passed ? "Passed! Nice work." : "Not quite — try again."}
+        &lt;/p>
+      )}
+
+      &lt;br />&lt;br />
+
+      &lt;Link to="/dashboard">
+        &lt;button>Back to Dashboard&lt;/button>
+      &lt;/Link>
+    &lt;/div>
+  );
+}
+
+export default ChallengeDetail;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#API_BASE_URL">API_BASE_URL</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#CURRENT_USER_ID">CURRENT_USER_ID</a></li><li><a href="global.html#ChallengeDetail">ChallengeDetail</a></li><li><a href="global.html#Challenges">Challenges</a></li><li><a href="global.html#DIFFICULTY_RANK">DIFFICULTY_RANK</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#GET/">GET /</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#PORT">PORT</a></li><li><a href="global.html#Progress">Progress</a></li><li><a href="global.html#calculateStreak">calculateStreak</a></li><li><a href="global.html#challengeTests">challengeTests</a></li><li><a href="global.html#challenges">challenges</a></li><li><a href="global.html#getChallenge">getChallenge</a></li><li><a href="global.html#getChallenges">getChallenges</a></li><li><a href="global.html#getProgress">getProgress</a></li><li><a href="global.html#pool">pool</a></li><li><a href="global.html#request">request</a></li><li><a href="global.html#runChallengeTests">runChallengeTests</a></li><li><a href="global.html#seed">seed</a></li><li><a href="global.html#submitChallenge">submitChallenge</a></li><li><a href="global.html#toDateString">toDateString</a></li><li><a href="global.html#valuesMatch">valuesMatch</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Jul 23 2026 18:52:18 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
