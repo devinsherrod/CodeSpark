@@ -1,21 +1,26 @@
-// seed.js
-// One-time script that inserts sample challenge data into the database
-// so the API has something real to return. Run with: npm run seed
-//
-// The 3 challenges here match the placeholder names already shown in
-// the frontend (src/pages/Challenges.jsx): Reverse String, FizzBuzz,
-// Two Sum — so if someone wires up fetch() calls on the frontend later,
-// the names will already line up with what's on screen.
+/**
+ * @file seed.js
+ * @description
+ * Seeds the CodeSpark database with sample coding challenges.
+ *
+ * Run this script once to populate the database with initial
+ * challenge data for development and testing.
+ */
 
 const pool = require("./db");
 
+/**
+ * Sample coding challenges inserted into the database.
+ *
+ * @constant {Object[]}
+ */
 const challenges = [
   {
     title: "Reverse String",
     description: "Write a function that reverses a string. Input: 'hello' -> Output: 'olleh'",
     difficulty: "Easy",
     starter_code: "function reverseString(str) {\n  // your code here\n}",
-    expected_output: "olleh", // what our naive pass/fail check looks for in the submission
+    expected_output: "olleh",
     hint: "Try splitting the string into an array of characters, reversing that array, then joining it back together.",
   },
   {
@@ -38,23 +43,28 @@ const challenges = [
   },
 ];
 
+/**
+ * Inserts the sample coding challenges into the database.
+ *
+ * After all records have been inserted, the database connection
+ * pool is closed before the script exits.
+ *
+ * @async
+ * @returns {Promise<void>}
+ */
 async function seed() {
   try {
-    // Loop through each challenge and insert it as its own row.
-    // Using ? placeholders (not string concatenation) to avoid SQL injection,
-    // same pattern as the route files.
     for (const c of challenges) {
       await pool.query(
         "INSERT INTO challenges (title, description, difficulty, starter_code, expected_output, hint) VALUES (?, ?, ?, ?, ?, ?)",
         [c.title, c.description, c.difficulty, c.starter_code, c.expected_output, c.hint]
       );
     }
+
     console.log(`Seeded ${challenges.length} challenges.`);
   } catch (err) {
     console.error("Seed failed:", err.message);
   } finally {
-    // Close the pool's connections when done so the script actually exits
-    // instead of hanging (a running pool keeps the Node process alive).
     await pool.end();
   }
 }

@@ -1,6 +1,25 @@
+/**
+ * @file Login.jsx
+ * @description
+ * Displays the login page for the CodeSpark application.
+ * Includes a short introductory splash screen and a simple
+ * login form for navigating to the dashboard.
+ */
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Login page component.
+ *
+ * Displays a splash screen when the application first loads.
+ * After the splash screen disappears, the user can enter an
+ * email address and password. Successful validation redirects
+ * the user to the dashboard.
+ *
+ * @function Login
+ * @returns {JSX.Element} The login page interface.
+ */
 function Login() {
   const [showIntro, setShowIntro] = useState(true);
   const [email, setEmail] = useState("");
@@ -9,6 +28,10 @@ function Login() {
 
   const navigate = useNavigate();
 
+  /**
+   * Displays the introductory splash screen for two seconds
+   * before showing the login form.
+   */
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowIntro(false);
@@ -26,6 +49,15 @@ function Login() {
     );
   }
 
+  /**
+   * Validates the login form.
+   *
+   * If both email and password are provided, the user is
+   * redirected to the dashboard. Otherwise an error message
+   * is displayed.
+   *
+   * @returns {void}
+   */
   function handleLogin() {
     if (!email || !password) {
       setError("Please enter both email and password.");
