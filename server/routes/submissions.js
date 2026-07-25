@@ -30,16 +30,17 @@ const { runChallengeTests } = require("../utils/challengeRunner");
 router.post("/", async (req, res) => {
   const { challengeId, userId, code } = req.body;
 
-  if (
-    challengeId === undefined ||
-    userId === undefined ||
-    typeof code !== "string" ||
-    code.trim() === ""
-  ) {
-    return res.status(400).json({
-      error: "challengeId, userId, and code are required",
-    });
-  }
+if (challengeId === undefined || userId === undefined) {
+  return res.status(400).json({
+    error: "challengeId and userId are required",
+  });
+}
+
+if (typeof code !== "string" || code.trim() === "") {
+  return res.status(400).json({
+    error: "Please enter a solution before submitting.",
+  });
+}
 
   const parsedChallengeId = Number(challengeId);
   const parsedUserId = Number(userId);
@@ -82,7 +83,11 @@ router.post("/", async (req, res) => {
       challengeId: parsedChallengeId,
       challengeTitle: challenge.title,
       passed,
-      message: passed ? "Passed! Nice work." : "Not quite—try again.",
+      message: passed
+        ? "Passed! Nice work."
+        : testResult.error
+          ? "Your code could not run because it contains an error."
+          : "Your code ran, but one or more tests failed.",
       error: testResult.error || null,
       expected: passed ? undefined : testResult.expected,
       actual: passed ? undefined : testResult.actual,
