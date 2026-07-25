@@ -27,7 +27,7 @@ function ChallengeDetail() {
   const [status, setStatus] = useState("loading"); // "loading" | "ready" | "error"
   const [code, setCode] = useState("");
   const [showHint, setShowHint] = useState(false);
-  const [result, setResult] = useState(null); // null | { passed: boolean }
+  const [result, setResult] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   /**
@@ -57,8 +57,8 @@ function ChallengeDetail() {
   /**
    * Submits the user's solution to the backend for evaluation.
    *
-   * Displays whether the submitted solution passed or failed
-   * after receiving the server response.
+   * Displays the result message returned by the backend,
+   * including validation errors and failed test information.
    *
    * @async
    * @returns {Promise<void>}
@@ -69,9 +69,20 @@ function ChallengeDetail() {
 
     try {
       const data = await submitChallenge(Number(id), code);
-      setResult({ passed: data.passed });
-    } catch {
-      setResult({ error: true });
+
+      setResult({
+        passed: data.passed,
+        message: data.message,
+        error: data.error,
+        expected: data.expected,
+        actual: data.actual,
+      });
+    } catch (error) {
+      setResult({
+        requestError: true,
+        message:
+          error.message || "Something went wrong submitting. Try again.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -89,6 +100,7 @@ function ChallengeDetail() {
     return (
       <div className="app-page">
         <p>Couldn't load this challenge. Is the backend server running?</p>
+
         <Link to="/challenges">
           <button>Back to Challenges</button>
         </Link>
@@ -111,7 +123,8 @@ function ChallengeDetail() {
         onChange={(e) => setCode(e.target.value)}
       ></textarea>
 
-      <br /><br />
+      <br />
+      <br />
 
       <button onClick={handleSubmit} disabled={submitting}>
         {submitting ? "Submitting..." : "Submit"}
@@ -130,19 +143,32 @@ function ChallengeDetail() {
         <p className="hint-text">Hint: {challenge.hint}</p>
       )}
 
-      {result && result.error && (
-        <p className="result-text">
-          Something went wrong submitting. Try again.
-        </p>
+      {result && (
+        <div className="result-text">
+          <p>
+            {result.message ||
+              (result.passed
+                ? "Passed! Nice work."
+                : "Your code ran, but one or more tests failed.")}
+          </p>
+
+          {!result.passed && result.error && !result.requestError && (
+            <p>Error: {result.error}</p>
+          )}
+
+          {!result.passed &&
+            result.expected !== undefined &&
+            result.actual !== undefined && (
+              <>
+                <p>Expected: {String(result.expected)}</p>
+                <p>Actual: {String(result.actual)}</p>
+              </>
+            )}
+        </div>
       )}
 
-      {result && !result.error && (
-        <p className="result-text">
-          {result.passed ? "Passed! Nice work." : "Not quite — try again."}
-        </p>
-      )}
-
-      <br /><br />
+      <br />
+      <br />
 
       <Link to="/dashboard">
         <button>Back to Dashboard</button>
