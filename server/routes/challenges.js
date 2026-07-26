@@ -21,9 +21,25 @@ const pool = require("../config/db");
  */
 router.get("/", async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      "SELECT id, title, difficulty FROM challenges ORDER BY id ASC"
-    );
+    const [rows] = await pool.query(`
+      SELECT
+        c.id,
+        c.title,
+        c.description,
+        c.difficulty,
+        CASE
+          WHEN EXISTS (
+            SELECT 1
+            FROM submissions s
+            WHERE s.challenge_id = c.id
+              AND s.passed = 1
+          )
+          THEN TRUE
+          ELSE FALSE
+        END AS completed
+      FROM challenges c
+      ORDER BY c.id ASC
+    `);
 
     res.json(rows);
   } catch (err) {
