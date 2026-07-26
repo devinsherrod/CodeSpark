@@ -106,6 +106,201 @@ const challengeTests = {
       { args: [[10]], expected: 10 },
     ],
   },
+
+    "Longest Word": {
+    functionName: "longestWord",
+    tests: [
+      {
+        args: ["CodeSpark makes coding fun"],
+        expected: "CodeSpark",
+      },
+      {
+        args: ["The quick brown fox"],
+        expected: "quick",
+      },
+      {
+        args: ["JavaScript"],
+        expected: "JavaScript",
+      },
+      {
+        args: [""],
+        expected: "",
+      },
+    ],
+  },
+
+  "Prime Number Checker": {
+    functionName: "isPrime",
+    tests: [
+      { args: [7], expected: true },
+      { args: [2], expected: true },
+      { args: [10], expected: false },
+      { args: [1], expected: false },
+      { args: [-5], expected: false },
+      { args: [97], expected: true },
+    ],
+  },
+
+  "Fibonacci Number": {
+    functionName: "fibonacci",
+    tests: [
+      { args: [0], expected: 0 },
+      { args: [1], expected: 1 },
+      { args: [6], expected: 8 },
+      { args: [10], expected: 55 },
+    ],
+  },
+
+  "Find Missing Number": {
+    functionName: "findMissingNumber",
+    tests: [
+      { args: [[3, 0, 1]], expected: 2 },
+      { args: [[0, 1]], expected: 2 },
+      { args: [[9, 6, 4, 2, 3, 5, 7, 0, 1]], expected: 8 },
+      { args: [[]], expected: 0 },
+    ],
+  },
+
+  "Array Intersection": {
+    functionName: "arrayIntersection",
+    tests: [
+      {
+        args: [[1, 2, 2, 3], [2, 3, 4]],
+        expected: [2, 3],
+      },
+      {
+        args: [["a", "b", "c"], ["b", "c", "d"]],
+        expected: ["b", "c"],
+      },
+      {
+        args: [[1, 2], [3, 4]],
+        expected: [],
+      },
+      {
+        args: [[], [1, 2]],
+        expected: [],
+      },
+    ],
+  },
+
+  "Valid Parentheses": {
+    functionName: "validParentheses",
+    tests: [
+      { args: ["({[]})"], expected: true },
+      { args: ["()[]{}"], expected: true },
+      { args: ["(]"], expected: false },
+      { args: ["([)]"], expected: false },
+      { args: [""], expected: true },
+      { args: ["((("], expected: false },
+    ],
+  },
+
+  "Binary Search": {
+    functionName: "binarySearch",
+    tests: [
+      {
+        args: [[1, 3, 5, 7, 9], 7],
+        expected: 3,
+      },
+      {
+        args: [[1, 3, 5, 7, 9], 1],
+        expected: 0,
+      },
+      {
+        args: [[1, 3, 5, 7, 9], 10],
+        expected: -1,
+      },
+      {
+        args: [[], 5],
+        expected: -1,
+      },
+      {
+        args: [[4], 4],
+        expected: 0,
+      },
+    ],
+  },
+
+  "Chunk an Array": {
+    functionName: "chunkArray",
+    tests: [
+      {
+        args: [[1, 2, 3, 4, 5], 2],
+        expected: [[1, 2], [3, 4], [5]],
+      },
+      {
+        args: [[1, 2, 3, 4], 4],
+        expected: [[1, 2, 3, 4]],
+      },
+      {
+        args: [[1, 2, 3], 1],
+        expected: [[1], [2], [3]],
+      },
+      {
+        args: [[], 3],
+        expected: [],
+      },
+    ],
+  },
+
+  "Flatten an Array": {
+    functionName: "flattenArray",
+    tests: [
+      {
+        args: [[1, [2, [3, 4]], 5]],
+        expected: [1, 2, 3, 4, 5],
+      },
+      {
+        args: [[[1], [2], [3]]],
+        expected: [1, 2, 3],
+      },
+      {
+        args: [[]],
+        expected: [],
+      },
+      {
+        args: [["a", ["b", ["c"]]]],
+        expected: ["a", "b", "c"],
+      },
+    ],
+  },
+
+  "Longest Unique Substring": {
+    functionName: "longestUniqueSubstring",
+    tests: [
+      { args: ["abcabcbb"], expected: 3 },
+      { args: ["bbbbb"], expected: 1 },
+      { args: ["pwwkew"], expected: 3 },
+      { args: [""], expected: 0 },
+      { args: ["abcdef"], expected: 6 },
+    ],
+  },
+
+  "Merge Overlapping Intervals": {
+    functionName: "mergeIntervals",
+    tests: [
+      {
+        args: [[[1, 3], [2, 6], [8, 10], [15, 18]]],
+        expected: [[1, 6], [8, 10], [15, 18]],
+      },
+      {
+        args: [[[1, 4], [4, 5]]],
+        expected: [[1, 5]],
+      },
+      {
+        args: [[[1, 4], [0, 2], [3, 5]]],
+        expected: [[0, 5]],
+      },
+      {
+        args: [[]],
+        expected: [],
+      },
+      {
+        args: [[[1, 2]]],
+        expected: [[1, 2]],
+      },
+    ],
+  },
 };
 
 /**

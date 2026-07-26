@@ -16,7 +16,7 @@ import Navbar from "../components/Navbar";
  *
  * @constant {number}
  */
-const TOTAL_CHALLENGES = 9;
+const TOTAL_CHALLENGES = 20;
 
 /**
  * XP awarded for every completed challenge.
