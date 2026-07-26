@@ -8,6 +8,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getChallenges } from "../api";
+import Navbar from "../components/Navbar";
 
 /**
  * Challenges page component.
@@ -35,6 +36,8 @@ function Challenges() {
   }, []);
 
   return (
+    <>
+    <Navbar />
     <div className="app-page">
       <h1>Challenges</h1>
 
@@ -66,6 +69,7 @@ function Challenges() {
         <button>Back to Dashboard</button>
       </Link>
     </div>
+    </>
   );
 }
 
