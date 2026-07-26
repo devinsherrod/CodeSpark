@@ -89,6 +89,8 @@ if (typeof code !== "string" || code.trim() === "") {
           ? "Your code could not run because it contains an error."
           : "Your code ran, but one or more tests failed.",
       error: testResult.error || null,
+      testNumber: testResult.testNumber,
+      input: testResult.input,
       expected: passed ? undefined : testResult.expected,
       actual: passed ? undefined : testResult.actual,
     });

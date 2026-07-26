@@ -356,7 +356,10 @@ function runChallengeTests(title, code) {
       timeout: 1000,
     });
 
-    for (const test of challenge.tests) {
+    for (let index = 0; index < challenge.tests.length; index += 1) {
+  const test = challenge.tests[index];
+      
+      
       sandbox.testArguments = test.args;
 
       const testScript = new vm.Script(`
@@ -370,6 +373,8 @@ function runChallengeTests(title, code) {
       if (!valuesMatch(actual, test.expected)) {
         return {
           passed: false,
+          testNumber: index + 1,
+          input: test.args,
           expected: test.expected,
           actual,
         };
