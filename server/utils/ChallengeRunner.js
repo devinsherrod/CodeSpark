@@ -46,6 +46,66 @@ const challengeTests = {
       { args: [[3, 3], 6], expected: [0, 1] },
     ],
   },
+
+  "Palindrome Checker": {
+    functionName: "isPalindrome",
+    tests: [
+      { args: ["racecar"], expected: true },
+      { args: ["hello"], expected: false },
+      { args: [""], expected: true },
+      { args: ["level"], expected: true },
+    ],
+  },
+
+  "Find Maximum Number": {
+    functionName: "findMaximum",
+    tests: [
+      { args: [[1, 5, 3, 9, 2]], expected: 9 },
+      { args: [[-10, -3, -20]], expected: -3 },
+      { args: [[7]], expected: 7 },
+      { args: [[4, 4, 4]], expected: 4 },
+    ],
+  },
+
+  "Count Vowels": {
+    functionName: "countVowels",
+    tests: [
+      { args: ["hello"], expected: 2 },
+      { args: ["CodeSpark"], expected: 3 },
+      { args: [""], expected: 0 },
+      { args: ["rhythm"], expected: 0 },
+    ],
+  },
+
+  "Remove Duplicates": {
+    functionName: "removeDuplicates",
+    tests: [
+      { args: [[1, 2, 2, 3, 3, 4]], expected: [1, 2, 3, 4] },
+      { args: [["a", "a", "b", "c", "c"]], expected: ["a", "b", "c"] },
+      { args: [[]], expected: [] },
+      { args: [[5, 5, 5]], expected: [5] },
+    ],
+  },
+
+  Factorial: {
+    functionName: "factorial",
+    tests: [
+      { args: [5], expected: 120 },
+      { args: [0], expected: 1 },
+      { args: [1], expected: 1 },
+      { args: [7], expected: 5040 },
+    ],
+  },
+
+  "Sum an Array": {
+    functionName: "sumArray",
+    tests: [
+      { args: [[1, 2, 3, 4]], expected: 10 },
+      { args: [[-2, 5, -1]], expected: 2 },
+      { args: [[]], expected: 0 },
+      { args: [[10]], expected: 10 },
+    ],
+  },
 };
 
 /**
