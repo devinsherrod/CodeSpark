@@ -1,5 +1,77 @@
 # CodeSpark
 Our team’s goal is to develop a web app that encourages users to learn programming via small daily coding challenges. The app aims to make learning programming easier and more fun for beginners by focusing on bite-sized exercises and consistent practice. 
+## Prerequisites
+Before running CodeSpark locally, make sure the following software is installed:
+- Node.js (includes npm)
+- MySQL Server 8.0 or later
+## Installation
+1. Clone the repository.
+
+2. Install frontend dependencies:
+
+```bash
+npm install
+```
+
+3. Navigate to the server directory and install backend dependencies:
+
+```bash
+cd server
+npm install
+```
+
+4. Create a MySQL database named:
+
+```text
+codespark_db
+```
+
+5. Run the SQL schema located at:
+
+```text
+server/config/schema.sql
+```
+
+6. Seed the database with sample challenge data:
+
+```bash
+node config/seed.js
+```
+
+7. Create a .env file inside the server directory with your database credentials:
+
+```text
+DB_HOST=localhost
+DB_USER=your_username
+DB_PASSWORD=your_password
+DB_NAME=codespark_db
+```
+
+8. Start the backend server:
+
+```bash
+npm run dev
+```
+
+9. In a separate terminal, start the frontend:
+
+```bash
+npm run dev
+```
+
+The frontend will run on:
+```text
+http://localhost:5173
+```
+
+The backend API will run on:
+```text
+http://localhost:5050
+```
+
+## Known Setup Requirement
+CodeSpark requires a running MySQL Server instance. If MySQL is not installed or the database server is not running, the backend API will be unable to connect to the database. Pages such as Dashboard, Challenges, Progress, and Challenge Detail may fail to load data from the backend.
+
 ## Release Notes: Milestone 1
 ### Features Completed
 - Created the React frontend prototype for CodeSpark.
@@ -33,5 +105,5 @@ Our team’s goal is to develop a web app that encourages users to learn program
 ### Known Limitations
 - Authentication and user accounts are not yet implemented.
 - Challenge progress tracking is not connected to a database.
-- Code submission and automatic evaluation features are still under development.
+- Code submissions currently use a placeholder validation method and do not execute user code in a secure sandbox.
 - Additional coding challenges and features will be added in future milestones.
