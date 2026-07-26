@@ -7,6 +7,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Challenges from "./pages/Challenges";
 import ChallengeDetail from "./pages/ChallengeDetail";
@@ -21,6 +22,7 @@ import "./App.css";
  *
  * Available routes:
  * - `/` displays the login page.
+ * - `/signup` displays the sign up page.
  * - `/dashboard` displays the user dashboard.
  * - `/challenges` displays the list of coding challenges.
  * - `/challenge/:id` displays the details of a selected challenge.
@@ -34,6 +36,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/challenges" element={<Challenges />} />
         <Route path="/challenge/:id" element={<ChallengeDetail />} />
