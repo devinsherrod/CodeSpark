@@ -145,6 +145,11 @@ function Login() {
           <button className="login-button" onClick={handleLogin}>
             Login
           </button>
+
+          <p className="signup-link">
+            Don't have an account?{" "}
+            <Link to="/signup">Sign Up</Link>
+          </p>
         </div>
 
         <p className="login-footer">
