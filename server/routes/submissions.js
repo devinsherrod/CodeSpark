@@ -8,7 +8,7 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
-const { runChallengeTests } = require("../utils/challengeRunner");
+const { runChallengeTests } = require("../utils/ChallengeRunner");
 
 /**
  * Submits a coding challenge solution for evaluation.
