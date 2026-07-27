@@ -7,7 +7,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 /**
  * Login page component.
@@ -146,15 +146,14 @@ function Login() {
             Login
           </button>
 
+          <p className="login-footer">
+            Practice consistently. Track your progress. Build confidence.
+          </p>
+          
           <p className="signup-link">
             Don't have an account?{" "}
             <Link to="/signup">Sign Up</Link>
           </p>
-        </div>
-
-        <p className="login-footer">
-          Practice consistently. Track your progress. Build confidence.
-        </p>
       </div>
     </div>
   );
