@@ -146,14 +146,15 @@ function Login() {
             Login
           </button>
 
-          <p className="login-footer">
-            Practice consistently. Track your progress. Build confidence.
-          </p>
-          
           <p className="signup-link">
             Don't have an account?{" "}
             <Link to="/signup">Sign Up</Link>
           </p>
+        </div>
+
+        <p className="login-footer">
+          Practice consistently. Track your progress. Build confidence.
+        </p>
       </div>
     </div>
   );
