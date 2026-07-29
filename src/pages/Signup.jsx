@@ -56,8 +56,29 @@ function Signup() {
       return;
     }
 
-    // Placeholder until backend authentication is implemented
-    setSuccess("Account created! Please log in.");
+    // Get existing accounts
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    
+    // Check for duplicate email
+    const existingUser = users.find(
+      (user) => user.email.toLowerCase() === email.toLowerCase()
+    );
+    
+    if (existingUser) {
+      setError("An account with this email already exists.");
+      return;
+    }
+    
+    // Save new account
+    users.push({
+      name,
+      email,
+      password,
+    });
+    
+    localStorage.setItem("users", JSON.stringify(users));
+    
+    setSuccess("Account created successfully! Please log in.");
 
     setTimeout(() => {
       navigate("/");
