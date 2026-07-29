@@ -8,6 +8,7 @@
 
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../api";
 
 /**
  * Login page component.
@@ -56,7 +57,7 @@ function Login() {
    *
    * @returns {void}
    */
-  function handleLogin() {
+  async function handleLogin() {
     if (!email.trim() || !password.trim()) {
       setError("Please enter both email and password.");
       return;
@@ -79,7 +80,19 @@ function Login() {
     localStorage.setItem("currentUser", JSON.stringify(user));
 
     setError("");
-    navigate("/dashboard");
+    try {
+      const data = await loginUser({
+        email: email.trim(),
+        password,
+      });
+      localStorage.setItem("userId", String(data.user.id));
+      localStorage.setItem("userName", data.user.name);
+      localStorage.setItem("userEmail", data.user.email);
+      
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
   /**

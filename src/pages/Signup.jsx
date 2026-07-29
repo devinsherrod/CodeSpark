@@ -8,6 +8,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { signupUser } from "../api";
 
 /**
  * Sign Up page component.
@@ -30,7 +31,7 @@ function Signup() {
   /**
    * Validates the sign up form.
    */
-  function handleSignup() {
+  async function handleSignup() {
     setError("");
     setSuccess("");
 
@@ -56,35 +57,21 @@ function Signup() {
       return;
     }
 
-    // Get existing accounts
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    
-    // Check for duplicate email
-    const existingUser = users.find(
-      (user) => user.email.toLowerCase() === email.toLowerCase()
-    );
-    
-    if (existingUser) {
-      setError("An account with this email already exists.");
-      return;
+    try {
+      await signupUser({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+      });
+      setSuccess("Account created! Please log in.");
+      
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+    } catch (err) {
+      setError(err.message);
     }
-    
-    // Save new account
-    users.push({
-      name,
-      email,
-      password,
-    });
-    
-    localStorage.setItem("users", JSON.stringify(users));
-    
-    setSuccess("Account created successfully! Please log in.");
-
-    setTimeout(() => {
-      navigate("/");
-    }, 1500);
   }
-
   return (
     <div className="app-page">
       <div className="login-card">

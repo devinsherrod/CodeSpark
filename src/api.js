@@ -13,10 +13,21 @@
 export const API_BASE_URL = "http://localhost:5050/api";
 
 /**
- * Temporary user ID used until authentication is implemented.
- * @constant {number}
+ * Retrieves the currently logged-in user's ID from local storage.
+ *
+ * @returns {number} Logged-in user's ID.
+ * @throws {Error} Throws an error when no user is logged in.
  */
-export const CURRENT_USER_ID = 1;
+export function getCurrentUserId() {
+  const storedUserId = localStorage.getItem("userId");
+  const userId = Number(storedUserId);
+
+  if (!Number.isInteger(userId) || userId <= 0) {
+    throw new Error("Please log in before continuing.");
+  }
+
+  return userId;
+}
 
 /**
  * Sends an HTTP request to the backend API.
@@ -48,7 +59,12 @@ async function request(path, options = {}) {
  * @returns {Promise<Object[]>} A list of coding challenges.
  */
 export function getChallenges() {
-  return request("/challenges");
+  const userId = getCurrentUserId();
+  return request(`/challenges?userId=${userId}`);
+}
+
+export function getChallenge(id) {
+  return request(`/challenges/${id}`);
 }
 
 /**
@@ -57,9 +73,7 @@ export function getChallenges() {
  * @param {number|string} id - Unique identifier of the challenge.
  * @returns {Promise<Object>} Challenge details.
  */
-export function getChallenge(id) {
-  return request(`/challenges/${id}`);
-}
+
 
 /**
  * Submits a user's solution for a coding challenge.
@@ -69,9 +83,11 @@ export function getChallenge(id) {
  * @returns {Promise<Object>} Submission result returned by the server.
  */
 export function submitChallenge(challengeId, code) {
+  const userId = getCurrentUserId();
+
   return request("/submissions", {
     method: "POST",
-    body: JSON.stringify({ challengeId, userId: CURRENT_USER_ID, code }),
+    body: JSON.stringify({ challengeId, userId, code }),
   });
 }
 
@@ -81,6 +97,37 @@ export function submitChallenge(challengeId, code) {
  * @param {number} [userId=CURRENT_USER_ID] - User ID whose progress is requested.
  * @returns {Promise<Object>} User progress information.
  */
-export function getProgress(userId = CURRENT_USER_ID) {
+export function getProgress(userId = getCurrentUserId()) {
   return request(`/progress/${userId}`);
+}
+
+/**
+ * Creates a new user account.
+ *
+ * @param {Object} account - New account information.
+ * @param {string} account.name - User's name.
+ * @param {string} account.email - User's email.
+ * @param {string} account.password - User's password.
+ * @returns {Promise<Object>} Created user information.
+ */
+export function signupUser({ name, email, password }) {
+  return request("/auth/signup", {
+    method: "POST",
+    body: JSON.stringify({ name, email, password }),
+  });
+}
+
+/**
+ * Logs in an existing user.
+ *
+ * @param {Object} credentials - Login credentials.
+ * @param {string} credentials.email - User's email.
+ * @param {string} credentials.password - User's password.
+ * @returns {Promise<Object>} Logged-in user information.
+ */
+export function loginUser({ email, password }) {
+  return request("/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
 }
