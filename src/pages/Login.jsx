@@ -2,8 +2,8 @@
  * @file Login.jsx
  * @description
  * Displays the login page for the CodeSpark application.
- * Includes a short introductory splash screen and a simple
- * login form for navigating to the dashboard.
+ * Includes a short introductory splash screen and allows
+ * users to log in through the backend authentication API.
  */
 
 import { useEffect, useState } from "react";
@@ -15,7 +15,7 @@ import { loginUser } from "../api";
  *
  * Displays an animated splash screen when the application first loads.
  * After the splash screen fades away, the user can enter an email
- * address and password and continue to the dashboard.
+ * address and password and log in to the application.
  *
  * @function Login
  * @returns {JSX.Element} The login page interface.
@@ -49,49 +49,32 @@ function Login() {
   }, []);
 
   /**
-   * Validates the login form.
+   * Validates the login form and sends the login information
+   * to the backend authentication API.
    *
-   * If both email and password are provided, the user is
-   * redirected to the dashboard. Otherwise an error message
-   * is displayed.
-   *
-   * @returns {void}
+   * @returns {Promise<void>}
    */
   async function handleLogin() {
+    setError("");
+
     if (!email.trim() || !password.trim()) {
       setError("Please enter both email and password.");
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-
-    const user = users.find(
-      (u) =>
-        u.email.toLowerCase() === email.toLowerCase() &&
-        u.password === password
-    );
-  
-    if (!user) {
-      setError("Invalid email or password.");
-      return;
-    }
-  
-    // Save current logged in user
-    localStorage.setItem("currentUser", JSON.stringify(user));
-
-    setError("");
     try {
       const data = await loginUser({
         email: email.trim(),
         password,
       });
+
       localStorage.setItem("userId", String(data.user.id));
       localStorage.setItem("userName", data.user.name);
       localStorage.setItem("userEmail", data.user.email);
-      
+
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Failed to log in.");
     }
   }
 
@@ -176,8 +159,7 @@ function Login() {
           </button>
 
           <p className="signup-link">
-            Don't have an account?{" "}
-            <Link to="/signup">Sign Up</Link>
+            Don't have an account? <Link to="/signup">Sign Up</Link>
           </p>
         </div>
 
