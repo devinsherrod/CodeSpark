@@ -63,6 +63,22 @@ function Login() {
       return;
     }
 
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const user = users.find(
+      (u) =>
+        u.email.toLowerCase() === email.toLowerCase() &&
+        u.password === password
+    );
+  
+    if (!user) {
+      setError("Invalid email or password.");
+      return;
+    }
+  
+    // Save current logged in user
+    localStorage.setItem("currentUser", JSON.stringify(user));
+
     setError("");
     try {
       const data = await loginUser({
