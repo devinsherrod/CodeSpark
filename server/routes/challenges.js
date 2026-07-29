@@ -11,17 +11,30 @@ const router = express.Router();
 const pool = require("../config/db");
 
 /**
- * Retrieves a list of all coding challenges.
+ * Retrieves a list of all coding challenges for the current user.
  *
- * @route GET /api/challenges
+ * The completed field is calculated separately for each user.
+ *
+ * @route GET /api/challenges?userId=:userId
  * @async
  * @param {Object} req - Express request object.
+ * @param {Object} req.query - Query parameters.
+ * @param {string} req.query.userId - Current user's identifier.
  * @param {Object} res - Express response object.
  * @returns {Promise<void>} Returns a JSON array of challenges.
  */
 router.get("/", async (req, res) => {
+  const userId = Number(req.query.userId);
+
+  if (!Number.isInteger(userId) || userId <= 0) {
+    return res.status(400).json({
+      error: "A valid userId is required",
+    });
+  }
+
   try {
-    const [rows] = await pool.query(`
+    const [rows] = await pool.query(
+      `
       SELECT
         c.id,
         c.title,
@@ -32,6 +45,7 @@ router.get("/", async (req, res) => {
             SELECT 1
             FROM submissions s
             WHERE s.challenge_id = c.id
+              AND s.user_id = ?
               AND s.passed = 1
           )
           THEN TRUE
@@ -39,17 +53,21 @@ router.get("/", async (req, res) => {
         END AS completed
       FROM challenges c
       ORDER BY c.id ASC
-    `);
+      `,
+      [userId]
+    );
 
     res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to fetch challenges" });
+    res.status(500).json({
+      error: "Failed to fetch challenges",
+    });
   }
 });
 
 /**
- * Retrieves detailed information for a single coding challenge.
+ * Retrieves detailed information for one coding challenge.
  *
  * @route GET /api/challenges/:id
  * @async
@@ -67,13 +85,17 @@ router.get("/:id", async (req, res) => {
     );
 
     if (rows.length === 0) {
-      return res.status(404).json({ error: "Challenge not found" });
+      return res.status(404).json({
+        error: "Challenge not found",
+      });
     }
 
     res.json(rows[0]);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to fetch challenge" });
+    res.status(500).json({
+      error: "Failed to fetch challenge",
+    });
   }
 });
 

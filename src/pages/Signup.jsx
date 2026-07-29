@@ -8,6 +8,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { signupUser } from "../api";
 
 /**
  * Sign Up page component.
@@ -30,7 +31,7 @@ function Signup() {
   /**
    * Validates the sign up form.
    */
-  function handleSignup() {
+  async function handleSignup() {
     setError("");
     setSuccess("");
 
@@ -56,14 +57,21 @@ function Signup() {
       return;
     }
 
-    // Placeholder until backend authentication is implemented
-    setSuccess("Account created! Please log in.");
-
-    setTimeout(() => {
-      navigate("/");
-    }, 1500);
+    try {
+      await signupUser({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+      });
+      setSuccess("Account created! Please log in.");
+      
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+    } catch (err) {
+      setError(err.message);
+    }
   }
-
   return (
     <div className="app-page">
       <div className="login-card">

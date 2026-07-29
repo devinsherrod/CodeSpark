@@ -1,9 +1,17 @@
 -- schema.sql
--- Defines the two tables the M2 backend needs. Run this once against a
--- fresh codespark_db database to create the tables before seeding data.
+-- Defines the database tables used by the CodeSpark backend.
 --
 -- Usage:
 --   mysql -u root -p codespark_db < config/schema.sql
+
+-- Stores registered CodeSpark users.
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Holds each coding challenge shown on the Challenges/Challenge Detail pages.
 CREATE TABLE IF NOT EXISTS challenges (
@@ -11,9 +19,9 @@ CREATE TABLE IF NOT EXISTS challenges (
   title VARCHAR(100) NOT NULL,
   description TEXT NOT NULL,
   difficulty ENUM('Easy', 'Medium', 'Hard') NOT NULL,
-  starter_code TEXT,              -- pre-filled code shown in the editor textarea
-  expected_output TEXT NOT NULL,  -- used by the placeholder pass/fail check in submissions.js
-  hint TEXT,                      -- M3: shown to the user on request, not automatically
+  starter_code TEXT,
+  expected_output TEXT NOT NULL,
+  hint TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -21,8 +29,8 @@ CREATE TABLE IF NOT EXISTS challenges (
 CREATE TABLE IF NOT EXISTS submissions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   challenge_id INT NOT NULL,
-  user_id INT NOT NULL,     -- no users table / auth yet, so this is just a plain int for now
-  code TEXT NOT NULL,       -- the code the user submitted
+  user_id INT NOT NULL,
+  code TEXT NOT NULL,
   passed BOOLEAN NOT NULL,
   submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (challenge_id) REFERENCES challenges(id)

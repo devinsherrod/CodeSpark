@@ -14,7 +14,7 @@ require("dotenv").config();
 const challengesRoutes = require("./routes/challenges");
 const submissionsRoutes = require("./routes/submissions");
 const progressRoutes = require("./routes/progress");
-
+const authRoutes = require("./routes/auth");
 const app = express();
 
 /**
@@ -45,7 +45,7 @@ app.use(express.json());
 app.use("/api/challenges", challengesRoutes);
 app.use("/api/submissions", submissionsRoutes);
 app.use("/api/progress", progressRoutes);
-
+app.use("/api/auth", authRoutes);
 /**
  * Root endpoint used to verify that the backend server
  * is running correctly.
