@@ -139,3 +139,22 @@ CodeSpark requires a running MySQL Server instance. If MySQL is not installed, t
 - Challenge progress tracking is not connected to a database.
 - Code submissions currently use a placeholder validation method and do not execute user code in a secure sandbox.
 - Additional coding challenges and features will be added in future milestones.
+
+## Release Notes: Milestone 4
+
+### Features Completed
+
+- Implemented user account registration functionality.
+- Added database integration for storing and retrieving user account information.
+- Added validation to prevent users from creating duplicate accounts with an email that already exists.
+- Improved login functionality by verifying user credentials against stored database records.
+- Updated backend database configuration and setup requirements to support user authentication features.
+- Fixed backend issues related to MySQL database connections and application startup.
+- Connected user account data with application features to support personalized user experiences.
+- Updated project functionality to better support user progress and challenge completion tracking.
+
+### Known Limitations
+
+- User authentication currently does not include advanced security features such as password encryption or multi-factor authentication.
+- Code submission validation is limited and does not execute user code in a fully isolated sandbox environment.
+- Additional challenge content and future learning features may be added in future updates.
