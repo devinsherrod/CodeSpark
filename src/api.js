@@ -10,7 +10,9 @@
  * Base URL of the CodeSpark backend API.
  * @constant {string}
  */
-export const API_BASE_URL = "http://localhost:5050/api";
+export const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://codespark-api-949436063213.us-central1.run.app/api";
 
 /**
  * Retrieves the currently logged-in user's ID from local storage.
