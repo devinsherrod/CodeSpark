@@ -1,11 +1,23 @@
 # CodeSpark
-Our team’s goal is to develop a web app that encourages users to learn programming via small daily coding challenges. The app aims to make learning programming easier and more fun for beginners by focusing on bite-sized exercises and consistent practice. 
+
+Our team’s goal is to develop a web app that encourages users to learn programming via small daily coding challenges. The app aims to make learning programming easier and more fun for beginners by focusing on bite-sized exercises and consistent practice.
+
 ## Prerequisites
+
 Before running CodeSpark locally, make sure the following software is installed:
+
 - Node.js (includes npm)
 - MySQL Server 8.0 or later
+- Git
+
 ## Installation
+
 1. Clone the repository.
+
+```bash
+git clone https://github.com/devinsherrod/CodeSpark.git
+cd CodeSpark
+```
 
 2. Install frontend dependencies:
 
@@ -22,15 +34,21 @@ npm install
 
 4. Create a MySQL database named:
 
-```text
-codespark_db
+```sql
+CREATE DATABASE codespark_db;
 ```
 
-5. Run the SQL schema located at:
+5. Run the SQL script below to create the required database tables:
 
 ```text
 server/config/schema.sql
 ```
+
+This creates the required database tables:
+
+- users
+- challenges
+- submissions
 
 6. Seed the database with sample challenge data:
 
@@ -38,13 +56,14 @@ server/config/schema.sql
 node config/seed.js
 ```
 
-7. Create a .env file inside the server directory with your database credentials:
+7. Create a `.env` file inside the `server` directory with your database credentials:
 
 ```text
 DB_HOST=localhost
 DB_USER=your_username
 DB_PASSWORD=your_password
 DB_NAME=codespark_db
+PORT=5050
 ```
 
 8. Start the backend server:
@@ -53,40 +72,49 @@ DB_NAME=codespark_db
 npm run dev
 ```
 
-9. In a separate terminal, start the frontend:
+9. Open a second terminal in the project root and start the frontend:
 
 ```bash
 npm run dev
 ```
 
 The frontend will run on:
+
 ```text
 http://localhost:5173
 ```
 
 The backend API will run on:
+
 ```text
 http://localhost:5050
 ```
 
 ## Known Setup Requirement
-CodeSpark requires a running MySQL Server instance. If MySQL is not installed or the database server is not running, the backend API will be unable to connect to the database. Pages such as Dashboard, Challenges, Progress, and Challenge Detail may fail to load data from the backend.
+
+CodeSpark requires a running MySQL Server instance. If MySQL is not installed, the database is not created, or the SQL schema has not been executed, backend features such as authentication, dashboard statistics, challenges, progress tracking, and code submissions will not function correctly.
 
 ## Release Notes: Milestone 1
+
 ### Features Completed
+
 - Created the React frontend prototype for CodeSpark.
 - Added an intro splash screen with CodeSpark branding.
 - Implemented Login, Dashboard, Challenges, Challenge Detail, and Progress pages.
 - Added navigation between pages using React Router.
 - Applied a consistent dark theme UI across all pages.
+
 ### Known Limitations
+
 - Authentication is not yet implemented.
 - Challenge data is currently hardcoded.
 - Progress tracking is not connected to a database.
 - Backend functionality will be added in future milestones.
 
 ## Release Notes: Milestone 2
+
 ### Features Completed
+
 - Integrated Jest and Supertest to provide automated testing for the backend API.
 - Updated the Express server to export the application for automated testing.
 - Modified the server to start only when run directly, allowing Jest to execute tests without opening a server port.
@@ -95,15 +123,46 @@ CodeSpark requires a running MySQL Server instance. If MySQL is not installed or
 - Added automated tests for the Submissions API, including successful submissions, input validation, invalid challenge IDs, retrieving user submissions, and database error handling.
 - Configured database mocking during testing so the test suite can run without requiring a MySQL server.
 
+### Known Limitations
+
+- User authentication and account management are not yet implemented.
+- The application does not yet have database-backed user progress tracking.
+- Coding challenge execution and automated solution evaluation are not fully implemented.
+- The frontend is not yet connected to all backend API functionality.
+- Additional user-facing features, including hints, streak tracking, and progress visualization, are planned for future milestones.
+
 ## Release Notes: Milestone 3
+
 ### Features Completed
+
 - Added actual coding challenge content for users to practice programming.
 - Created challenge descriptions, instructions, and examples to guide users through solving problems.
 - Updated the Challenges page to display available coding exercises.
 - Expanded challenge details pages to provide users with the information needed to complete each challenge.
 - Improved the project structure to support adding more coding challenges in future milestones.
+
 ### Known Limitations
+
 - Authentication and user accounts are not yet implemented.
 - Challenge progress tracking is not connected to a database.
 - Code submissions currently use a placeholder validation method and do not execute user code in a secure sandbox.
 - Additional coding challenges and features will be added in future milestones.
+
+## Release Notes: Milestone 4
+
+### Features Completed
+
+- Implemented user account registration functionality.
+- Added database integration for storing and retrieving user account information.
+- Added validation to prevent users from creating duplicate accounts with an email that already exists.
+- Improved login functionality by verifying user credentials against stored database records.
+- Updated backend database configuration and setup requirements to support user authentication features.
+- Fixed backend issues related to MySQL database connections and application startup.
+- Connected user account data with application features to support personalized user experiences.
+- Updated project functionality to better support user progress and challenge completion tracking.
+
+### Known Limitations
+
+- User authentication currently does not include advanced security features such as password encryption or multi-factor authentication.
+- Code submission validation is limited and does not execute user code in a fully isolated sandbox environment.
+- Additional challenge content and future learning features may be added in future updates.
