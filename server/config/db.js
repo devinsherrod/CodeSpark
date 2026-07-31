@@ -21,24 +21,31 @@ require("dotenv").config();
  *
  * @constant {import("mysql2/promise").Pool}
  */
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  port: Number(process.env.DB_PORT) || 3306,
+const poolConfig = {
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "codespark_db",
-
-  ssl:
-    process.env.DB_SSL === "true"
-      ? {
-          rejectUnauthorized: false,
-        }
-      : undefined,
-
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-});
+};
+
+if (process.env.DB_SOCKET_PATH) {
+  // Cloud Run / Cloud SQL
+  poolConfig.socketPath = process.env.DB_SOCKET_PATH;
+} else {
+  // Local development
+  poolConfig.host = process.env.DB_HOST || "localhost";
+  poolConfig.port = Number(process.env.DB_PORT) || 3306;
+
+  if (process.env.DB_SSL === "true") {
+    poolConfig.ssl = {
+      rejectUnauthorized: false,
+    };
+  }
+}
+
+const pool = mysql.createPool(poolConfig);
 
 /**
  * Shared MySQL connection pool.
