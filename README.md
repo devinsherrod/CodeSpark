@@ -123,6 +123,14 @@ CodeSpark requires a running MySQL Server instance. If MySQL is not installed, t
 - Added automated tests for the Submissions API, including successful submissions, input validation, invalid challenge IDs, retrieving user submissions, and database error handling.
 - Configured database mocking during testing so the test suite can run without requiring a MySQL server.
 
+### Known Limitations
+
+- User authentication and account management are not yet implemented.
+- The application does not yet have database-backed user progress tracking.
+- Coding challenge execution and automated solution evaluation are not fully implemented.
+- The frontend is not yet connected to all backend API functionality.
+- Additional user-facing features, including hints, streak tracking, and progress visualization, are planned for future milestones.
+
 ## Release Notes: Milestone 3
 
 ### Features Completed
