@@ -10,7 +10,8 @@
  */
 
 const mysql = require("mysql2/promise");
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 /**
  * MySQL connection pool.
@@ -37,4 +38,14 @@ const pool = mysql.createPool({
  * Imported by route files to execute SQL queries using
  * asynchronous database operations.
  */
+// Test the connection immediately on startup
+pool.getConnection()
+  .then(connection => {
+    console.log("🚀 Database connected successfully from db.js pool!");
+    connection.release();
+  })
+  .catch(err => {
+    console.error("❌ Database connection failed from db.js pool:", err.message);
+  });
+  
 module.exports = pool;
